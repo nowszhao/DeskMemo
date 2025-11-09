@@ -1,0 +1,12 @@
+# Screenshot capture
+mss==9.0.1
+pillow==10.1.0
+# 使用 AppleScript 方式，不需要 pyobjc 编译
+
+# HTTP client
+httpx==0.25.2
+
+# Configuration
+python-dotenv==1.0.0
+pydantic==2.5.2
+pydantic-settings==2.1.0
