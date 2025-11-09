@@ -77,7 +77,9 @@ function Dashboard() {
 
         <div className="stat bg-base-100 shadow">
           <div className="stat-title">日期</div>
-          <div className="stat-value text-sm">{stats?.date || new Date().toLocaleDateString()}</div>
+          <div className="stat-value text-sm">{stats?.date || new Date().toLocaleDateString('zh-CN', {
+            timeZone: 'Asia/Shanghai'
+          })}</div>
           <div className="stat-desc">实时更新</div>
         </div>
       </div>
@@ -136,6 +138,7 @@ function Dashboard() {
                       </div>
                       <div className="text-xs text-gray-400">
                         {new Date(activity.timestamp).toLocaleTimeString('zh-CN', {
+                          timeZone: 'Asia/Shanghai',
                           hour: '2-digit',
                           minute: '2-digit'
                         })}
@@ -148,10 +151,4 @@ function Dashboard() {
               )}
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default Dashboard;
+        </div

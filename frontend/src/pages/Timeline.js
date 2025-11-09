@@ -21,8 +21,8 @@ function Timeline() {
       const response = await screenshotsAPI.getScreenshots({
         skip: page * limit,
         limit: limit,
-        start_date: `${selectedDate}T00:00:00`,
-        end_date: `${selectedDate}T23:59:59`,
+        start_date: `${selectedDate}T00:00:00+08:00`,
+        end_date: `${selectedDate}T23:59:59+08:00`,
       });
       
       setScreenshots(response.data.items);
@@ -73,7 +73,11 @@ function Timeline() {
                 </figure>
                 <div className="card-body p-4">
                   <p className="text-xs text-gray-500">
-                    {new Date(screenshot.timestamp).toLocaleTimeString('zh-CN')}
+                    {new Date(screenshot.timestamp).toLocaleTimeString('zh-CN', {
+                      timeZone: 'Asia/Shanghai',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </p>
                   <div className="flex gap-2">
                     {screenshot.is_analyzed && (
@@ -122,7 +126,9 @@ function Timeline() {
         <div className="modal modal-open">
           <div className="modal-box max-w-4xl">
             <h3 className="font-bold text-lg mb-4">
-              {new Date(selectedImage.timestamp).toLocaleString('zh-CN')}
+              {new Date(selectedImage.timestamp).toLocaleString('zh-CN', {
+                timeZone: 'Asia/Shanghai'
+              })}
             </h3>
             <img
               src={getImageUrl(`/files/${selectedImage.filename}`)}

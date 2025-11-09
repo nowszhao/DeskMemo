@@ -11,6 +11,7 @@ from backend.models import Screenshot, Activity, Report
 from backend.services.ai_service import ai_service
 from backend.services.vector_service import vector_service
 from backend.config import settings
+from backend.utils.timezone import beijing_naive, get_hour_range_beijing, get_day_range_beijing
 
 logger = logging.getLogger(__name__)
 
@@ -247,13 +248,8 @@ class ReportGenerator:
         """生成小时报告"""
         db = SessionLocal()
         try:
-            if target_hour is None:
-                # 生成上一小时的报告
-                now = datetime.now()
-                target_hour = now.replace(minute=0, second=0, microsecond=0) - timedelta(hours=1)
-            
-            start_time = target_hour
-            end_time = start_time + timedelta(hours=1)
+            # 使用北京时间计算小时范围
+            start_time, end_time = get_hour_range_beijing(target_hour)
             
             # 检查是否已生成
             existing = db.query(Report).filter(
@@ -372,7 +368,7 @@ class ReportGenerator:
             db.commit()
             db.refresh(report)
             
-            logger.info(f"Generated daily report for {target_date}")
+            logger.info(f"Generated daily report for {start_time.date()}")
             return report
             
         finally:

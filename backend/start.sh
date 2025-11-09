@@ -15,22 +15,10 @@ if [ ! -d "venv" ]; then
     python3 -m venv venv
 fi
 
-# 激活虚拟环境
 source venv/bin/activate
 
 # 安装依赖
 echo "Installing backend dependencies..."
-pip install -r backend/requirements.txt
-
-# 检查配置文件
-if [ ! -f "backend/.env" ]; then
-    echo "Creating backend .env file..."
-    cp backend/.env.example backend/.env
-    echo ""
-    echo "⚠️  IMPORTANT: Please edit backend/.env and configure:"
-    echo "   - AI_IMAGE_SERVER (for production deployment)"
-    echo ""
-fi
 
 # 启动后端
 echo "Starting backend server..."

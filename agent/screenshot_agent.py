@@ -8,7 +8,7 @@ import sys
 import os
 import subprocess
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from io import BytesIO
 import logging
 
@@ -19,6 +19,9 @@ from mss import mss
 from PIL import Image
 import httpx
 from agent.config import agent_settings
+
+# 北京时区
+BEIJING_TZ = timezone(timedelta(hours=8))
 
 # 配置日志
 logging.basicConfig(
@@ -201,7 +204,7 @@ class ScreenshotAgent:
     async def upload_screenshot(self, image_buffer: BytesIO, app_name: str = None) -> bool:
         """上传截图到服务器"""
         try:
-            filename = f"screenshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+            filename = f"screenshot_{datetime.now(BEIJING_TZ).strftime('%Y%m%d_%H%M%S')}.jpg"
             
             async with httpx.AsyncClient(timeout=30.0) as client:
                 files = {'file': (filename, image_buffer, 'image/jpeg')}

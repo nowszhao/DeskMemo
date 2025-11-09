@@ -374,3 +374,18 @@ DATABASE_URL=postgresql://user:pass@localhost/deskmemo
   - 客户端：配置 `agent/.env`，设置 `AGENT_SERVER_URL`
   - 前端：配置 `frontend/.env.local`（可选）
 - **关键点**：确保 AI 服务能访问到图片 URL
+
+
+
+# FAQ
+
+# 创建临时目录
+mkdir -p /data/tmp
+mkdir -p /data/pip-cache
+
+# 设置环境变量并安装
+export TMPDIR=/data/tmp
+export PIP_CACHE_DIR=/data/pip-cache
+
+# 然后再安装
+pip install -r requirements.txt

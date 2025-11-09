@@ -72,9 +72,11 @@ function Reports() {
                   <div className="card-body">
                     <h2 className="card-title">
                       {new Date(report.start_time).toLocaleTimeString('zh-CN', {
+                        timeZone: 'Asia/Shanghai',
                         hour: '2-digit',
                         minute: '2-digit'
                       })} - {new Date(report.end_time).toLocaleTimeString('zh-CN', {
+                        timeZone: 'Asia/Shanghai',
                         hour: '2-digit',
                         minute: '2-digit'
                       })}

@@ -91,7 +91,9 @@ function Search() {
                           应用：{result.application}
                         </p>
                         <p className="text-xs text-gray-500">
-                          时间：{new Date(result.timestamp).toLocaleString('zh-CN')}
+                          时间：{new Date(result.timestamp).toLocaleString('zh-CN', {
+                            timeZone: 'Asia/Shanghai'
+                          })}
                         </p>
                       </div>
                       {result.screenshot_filename && (

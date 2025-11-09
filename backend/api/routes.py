@@ -9,7 +9,7 @@ from backend.models import Screenshot, Activity, Report
 from backend.services.image_service import image_service
 from backend.services.vector_service import vector_service
 from backend.tasks.processor import screenshot_processor
-from backend.config import settings
+from backend.utils.timezone import beijing_naive, parse_date_beijing, get_day_range_beijing, format_beijing_time
 
 router = APIRouter()
 
@@ -77,11 +77,11 @@ async def get_screenshots(
     query = db.query(Screenshot)
     
     if start_date:
-        start = datetime.fromisoformat(start_date)
+        start = parse_date_beijing(start_date)
         query = query.filter(Screenshot.timestamp >= start)
     
     if end_date:
-        end = datetime.fromisoformat(end_date)
+        end = parse_date_beijing(end_date)
         query = query.filter(Screenshot.timestamp <= end)
     
     total = query.count()
@@ -119,11 +119,11 @@ async def get_activities(
         query = query.filter(Activity.activity_type == activity_type)
     
     if start_date:
-        start = datetime.fromisoformat(start_date)
+        start = parse_date_beijing(start_date)
         query = query.filter(Activity.timestamp >= start)
     
     if end_date:
-        end = datetime.fromisoformat(end_date)
+        end = parse_date_beijing(end_date)
         query = query.filter(Activity.timestamp <= end)
     
     total = query.count()
@@ -248,16 +248,13 @@ async def get_hourly_reports(
     query = db.query(Report).filter(Report.report_type == "hourly")
     
     if date:
-        target_date = datetime.fromisoformat(date).date()
-        start = datetime.combine(target_date, datetime.min.time())
-        end = start + timedelta(days=1)
-        query = query.filter(Report.start_time >= start, Report.start_time < end)
+        # 使用北京时间解析日期
+        start_time, end_time = get_day_range_beijing(parse_date_beijing(date))
+        query = query.filter(Report.start_time >= start_time, Report.start_time < end_time)
     else:
-        # 默认获取今天的
-        today = datetime.now().date()
-        start = datetime.combine(today, datetime.min.time())
-        end = start + timedelta(days=1)
-        query = query.filter(Report.start_time >= start, Report.start_time < end)
+        # 默认获取今天的（北京时间）
+        start_time, end_time = get_day_range_beijing()
+        query = query.filter(Report.start_time >= start_time, Report.start_time < end_time)
     
     reports = query.order_by(Report.start_time.desc()).all()
     
@@ -312,20 +309,18 @@ async def get_daily_reports(
 @router.get("/stats/today")
 async def get_today_stats(db: Session = Depends(get_db)):
     """获取今日统计"""
-    today = datetime.now().date()
-    start = datetime.combine(today, datetime.min.time())
-    end = start + timedelta(days=1)
+    start_time, end_time = get_day_range_beijing()
     
     # 截屏数量
     screenshot_count = db.query(Screenshot).filter(
-        Screenshot.timestamp >= start,
-        Screenshot.timestamp < end
+        Screenshot.timestamp >= start_time,
+        Screenshot.timestamp < end_time
     ).count()
     
     # 活动统计
     activities = db.query(Activity).filter(
-        Activity.timestamp >= start,
-        Activity.timestamp < end
+        Activity.timestamp >= start_time,
+        Activity.timestamp < end_time
     ).all()
     
     activity_type_counts = {}
@@ -334,13 +329,13 @@ async def get_today_stats(db: Session = Depends(get_db)):
         activity_type_counts[t] = activity_type_counts.get(t, 0) + 1
     
     return {
-        "date": today.isoformat(),
+        "date": start_time.date().isoformat(),
         "screenshot_count": screenshot_count,
         "activity_count": len(activities),
         "activity_distribution": activity_type_counts,
         "analyzed_count": db.query(Screenshot).filter(
-            Screenshot.timestamp >= start,
-            Screenshot.timestamp < end,
+            Screenshot.timestamp >= start_time,
+            Screenshot.timestamp < end_time,
             Screenshot.is_analyzed == True
         ).count()
     }
