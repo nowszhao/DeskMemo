@@ -231,10 +231,3 @@ cd frontend
 npm start
 ```
 
-## 许可证
-
-MIT License
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
