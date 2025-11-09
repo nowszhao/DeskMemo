@@ -23,6 +23,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# 降低 watchfiles 日志级别，避免刷屏
+logging.getLogger("watchfiles").setLevel(logging.WARNING)
+
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
@@ -128,5 +131,5 @@ if __name__ == "__main__":
         "backend.main:app",
         host=settings.backend_host,
         port=settings.backend_port,
-        reload=True
+        reload=False  # 关闭热重载，避免日志刷屏
     )
