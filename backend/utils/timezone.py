@@ -84,8 +84,8 @@ def get_hour_range_beijing(target_hour: Optional[datetime] = None) -> tuple[date
 def get_day_range_beijing(target_date: Optional[datetime] = None) -> tuple[datetime, datetime]:
     """获取指定日期的开始和结束时间（北京时间）"""
     if target_date is None:
-        # 获取昨天
-        target_date = (now_beijing() - timedelta(days=1)).date()
+        # 获取今天
+        target_date = now_beijing().date()
     elif isinstance(target_date, datetime):
         target_date = target_date.date()
     

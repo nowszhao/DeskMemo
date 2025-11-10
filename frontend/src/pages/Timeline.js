@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { screenshotsAPI, getImageUrl } from '../services/api';
+import { getTodayBeijing } from '../utils/timezone';
 
 function Timeline() {
   const [screenshots, setScreenshots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getTodayBeijing());
   const [selectedImage, setSelectedImage] = useState(null);
 
   const limit = 20;
-
-  useEffect(() => {
-    loadScreenshots();
-  }, [page, selectedDate]);
 
   const loadScreenshots = async () => {
     setLoading(true);
@@ -33,6 +30,11 @@ function Timeline() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadScreenshots();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, selectedDate]);
 
   const totalPages = Math.ceil(total / limit);
 

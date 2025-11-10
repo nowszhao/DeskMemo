@@ -10,6 +10,7 @@ from backend.services.image_service import image_service
 from backend.services.vector_service import vector_service
 from backend.tasks.processor import screenshot_processor
 from backend.utils.timezone import beijing_naive, parse_date_beijing, get_day_range_beijing, format_beijing_time
+from backend.config import settings
 
 router = APIRouter()
 

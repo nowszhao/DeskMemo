@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>测试前端时区</title>
+</head>
+<body>
+    <h1>前端时区测试</h1>
+    <div id="output"></div>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        // 方法1：原来的方法（错误）
+        const method1 = new Date().toISOString().split('T')[0];
+        
+        // 方法2：使用 toLocaleString（可能有问题）
+        const beijing1 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
+        const method2 = beijing1.toISOString().split('T')[0];
+        
+        // 方法3：直接使用 toLocaleDateString（推荐）
+        const method3 = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+        
+        // 方法4：手动计算
+        const now = new Date();
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const beijingTime = new Date(utcTime + (3600000 * 8));
+        const method4 = beijingTime.toISOString().split('T')[0];
+        
+        output.innerHTML = `
+            <p><strong>当前浏览器本地时间:</strong> ${new Date().toString()}</p>
+            <p><strong>UTC时间:</strong> ${new Date().toISOString()}</p>
+            <hr>
+            <p><strong>方法1（原来）:</strong> ${method1}</p>
+            <p><strong>方法2（toLocaleString转换）:</strong> ${method2}</p>
+            <p><strong>方法3（toLocaleDateString - 推荐）:</strong> ${method3}</p>
+            <p><strong>方法4（手动计算UTC+8）:</strong> ${method4}</p>
+            <hr>
+            <p><strong>预期结果:</strong> 2025-11-10 (如果当前是北京时间11月10日)</p>
+        `;
+    </script>
+</body>
+</html>

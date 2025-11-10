@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { reportsAPI } from '../services/api';
+import { getTodayBeijing } from '../utils/timezone';
 
 function Reports() {
   const [activeTab, setActiveTab] = useState('hourly');
   const [hourlyReports, setHourlyReports] = useState([]);
   const [dailyReports, setDailyReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-  useEffect(() => {
-    loadReports();
-  }, [activeTab, selectedDate]);
+  const [selectedDate, setSelectedDate] = useState(getTodayBeijing());
 
   const loadReports = async () => {
     setLoading(true);
@@ -28,6 +25,11 @@ function Reports() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, selectedDate]);
 
   return (
     <div className="space-y-6">
